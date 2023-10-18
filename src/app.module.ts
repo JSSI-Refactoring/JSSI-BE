@@ -8,6 +8,7 @@ import { VideosModule } from './modules/videos/videos.module';
 import { GoalsModule } from './modules/goals/goals.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './modules/databases/database.module';
+import { UsersModule } from 'modules/users/users.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { DatabaseModule } from './modules/databases/database.module';
     PostsModule,
     CommentsModule,
     AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
