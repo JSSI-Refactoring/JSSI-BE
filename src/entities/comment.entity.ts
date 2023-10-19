@@ -3,7 +3,7 @@ import { CommonPkEntity } from './common/common.entity';
 import { UserEntity } from './user.entity';
 import { PostEntity } from './post.entity';
 
-@Entity()
+@Entity('Comment')
 export class CommentEntity extends CommonPkEntity {
   @Column('int', { unique: false, nullable: false })
   userId: number;

@@ -11,7 +11,7 @@ import { GoalEntity } from './goal.entity';
 import { UserEntity } from './user.entity';
 import { CommentEntity } from './comment.entity';
 
-@Entity()
+@Entity('Post')
 export class PostEntity extends CommonPkEntity {
   @Column('int', { unique: true, nullable: false })
   goalId: number;
