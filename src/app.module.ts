@@ -7,8 +7,8 @@ import { PostsModule } from './modules/posts/posts.module';
 import { VideosModule } from './modules/videos/videos.module';
 import { GoalsModule } from './modules/goals/goals.module';
 import { ConfigModule } from '@nestjs/config';
-import { DatabaseModule } from './modules/databases/database.module';
 import { UsersModule } from './modules/users/users.module';
+import { DatabaseModule } from '@databases/database.module';
 
 @Module({
   imports: [
