@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { CommonPkEntity } from './common/common.entity';
 import { GoalEntity } from './goal.entity';
 
@@ -25,8 +19,8 @@ export class VideoEntity extends CommonPkEntity {
   @Column('int', { unique: true, nullable: false })
   goalId: number;
 
-  // Video - Goal
-  @OneToOne(() => GoalEntity, (goal) => goal.videos)
-  @JoinColumn({ name: 'goalId', referencedColumnName: 'id' })
+  // goal: 일대일
+  @OneToOne(() => VideoEntity)
+  @JoinColumn({ name: 'goalId' })
   goal: GoalEntity;
 }

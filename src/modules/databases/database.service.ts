@@ -20,7 +20,7 @@ export class DatabaseService {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    entities: [],
+    entities: ['src/**/*.entity{.ts,.js}'], // 엔티티 클래스의 경로
     synchronize: true,
   });
 }

@@ -1,6 +1,8 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { CommonPkEntity } from './common/common.entity';
 import { GoalEntity } from './goal.entity';
+import { PostEntity } from './post.entity';
+import { CommentEntity } from './comment.entity';
 
 @Entity('User')
 export class UserEntity extends CommonPkEntity {
@@ -16,10 +18,17 @@ export class UserEntity extends CommonPkEntity {
   @Column('varchar', { unique: false, nullable: false })
   profileImage: string;
 
-  // User - Goal 일대다
+  // goal: 일대다
   @OneToMany(() => GoalEntity, (goal) => goal.user)
   goals: GoalEntity[];
 
-  // 
-  // User - Like 다대다
+  // post: 일대다
+  @OneToMany(() => PostEntity, (post) => post.user)
+  posts: PostEntity[];
+
+  // comment: 일대다
+  @OneToMany(() => CommentEntity, (comment) => comment.user)
+  comments: CommentEntity[];
+
+  // like: 다대다
 }

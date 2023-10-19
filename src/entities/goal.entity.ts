@@ -1,16 +1,10 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { CommonPkEntity } from './common/common.entity';
 import { UserEntity } from './user.entity';
 import { VideoEntity } from './video.entity';
+import { PostEntity } from './post.entity';
 
-@Entity()
+@Entity('Goal')
 export class GoalEntity extends CommonPkEntity {
   @Column('varchar', { unique: false, nullable: false })
   title: string;
@@ -30,12 +24,19 @@ export class GoalEntity extends CommonPkEntity {
   @Column('varchar', { unique: false, nullable: false })
   day3: string;
 
-  // Goal - User
+  @Column('int', { unique: false, nullable: false })
+  userId: string;
+
+  // user: 다대일
   @ManyToOne(() => UserEntity, (user) => user.goals)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: UserEntity;
 
-  // Goal - Video
+  // video: 일대일
   @OneToOne(() => VideoEntity, (video) => video.goal)
-  videos: VideoEntity;
+  video: VideoEntity;
+
+  // post: 일대일
+  @OneToOne(() => PostEntity, (post) => post.goal)
+  post: PostEntity;
 }
