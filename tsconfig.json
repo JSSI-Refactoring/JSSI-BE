@@ -16,7 +16,8 @@
       "@videos/*": ["./src/modules/videos/*"],
       "@posts/*": ["./src/modules/posts/*"],
       "@comments/*": ["./src/modules/comments/*"],
-      "@databases/*": ["./src/modules/databases/*"]
+      "@databases/*": ["./src/modules/databases/*"],
+      "@entities/*": ["./src/entities/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
