@@ -7,8 +7,10 @@ module.exports = {
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
+    'airbnb',
+    'airbnb/hooks',
+    // 'plugin:@typescript-eslint/recommended',
+    // 'plugin:prettier/recommended',
   ],
   root: true,
   env: {
@@ -21,5 +23,9 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-empty-function': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
+    'unused-imports/no-unused-imports': 'error',
+    'import/no-unresolved': 'off',
   },
 };

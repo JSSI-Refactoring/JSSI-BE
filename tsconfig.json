@@ -9,14 +9,14 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
-      "@auth/*": ["/modules/auth/*"],
-      "@goals/*": ["/modules/goals/*"],
-      "@videos/*": ["/modules/videos/*"],
-      "@posts/*": ["/modules/posts/*"],
-      "@comments/*": ["/modules/comments/*"],
-      "@databases/*": ["/modules/databases/*"]
+      "@auth/*": ["./src/modules/auth/*"],
+      "@goals/*": ["./src/modules/goals/*"],
+      "@videos/*": ["./src/modules/videos/*"],
+      "@posts/*": ["./src/modules/posts/*"],
+      "@comments/*": ["./src/modules/comments/*"],
+      "@databases/*": ["./src/modules/databases/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
@@ -24,6 +24,7 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "strict": true
   }
 }
