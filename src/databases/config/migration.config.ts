@@ -7,5 +7,4 @@ const migrationDataSource = new DataSource({
   migrations: [`${PROJECT_SRC_ROOT}/databases/migrations/*.ts`],
 });
 
-console.log({ ...ormConfig });
 export default migrationDataSource;
