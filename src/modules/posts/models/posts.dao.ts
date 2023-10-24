@@ -1,11 +1,11 @@
-import { PostEntity } from '@entities/post.entity';
+import { Post } from '@entities/post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 export class PostsDAO {
   constructor(
-    @InjectRepository(PostEntity)
-    private readonly postsRepository: Repository<PostEntity>,
+    @InjectRepository(Post)
+    private readonly postsRepository: Repository<Post>,
   ) {}
 
   async findAll() {
