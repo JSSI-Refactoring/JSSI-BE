@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
-import { CommonPkEntity } from './common/common.entity';
-import { GoalEntity } from './goal.entity';
+import { CommonPk } from '@entities/common/common.entity';
+import { Goal } from '@entities/goal.entity';
 
 @Entity('Video')
-export class VideoEntity extends CommonPkEntity {
+export class Video extends CommonPk {
   @Column('varchar', { unique: false, nullable: true })
   video1: string;
 
@@ -20,7 +20,7 @@ export class VideoEntity extends CommonPkEntity {
   goalId: number;
 
   // goal: 일대일
-  @OneToOne(() => VideoEntity)
+  @OneToOne(() => Video)
   @JoinColumn({ name: 'goalId' })
-  goal: GoalEntity;
+  goal: Goal;
 }

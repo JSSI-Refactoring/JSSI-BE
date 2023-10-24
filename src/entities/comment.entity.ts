@@ -1,10 +1,11 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { CommonPkEntity } from './common/common.entity';
-import { UserEntity } from './user.entity';
-import { PostEntity } from './post.entity';
+import { CommonPk } from '@entities/common/common.entity';
+import { User } from '@entities/user.entity';
+import { Post } from '@entities/post.entity';
+// import { Post } from './post.entity';
 
 @Entity('Comment')
-export class CommentEntity extends CommonPkEntity {
+export class Comment extends CommonPk {
   @Column('int', { unique: false, nullable: false })
   userId: number;
 
@@ -15,12 +16,12 @@ export class CommentEntity extends CommonPkEntity {
   comment: string;
 
   // user: 다대일
-  @ManyToOne(() => UserEntity, (user) => user.comments)
+  @ManyToOne(() => User, (user) => user.comments)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
-  user: UserEntity;
+  user: User;
 
   // post: 다대일
-  @ManyToOne(() => PostEntity, (post) => post.comments)
+  @ManyToOne(() => Post, (post) => post.comments)
   @JoinColumn({ name: 'postId', referencedColumnName: 'id' })
-  post: PostEntity;
+  post: Post;
 }
