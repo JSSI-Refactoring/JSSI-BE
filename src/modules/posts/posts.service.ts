@@ -1,15 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostsDAO } from './models/posts.dao';
+import { PostEntity } from '@entities/post.entity';
 
 @Injectable()
 export class PostsService {
+  constructor(private readonly postsDAO: PostsDAO) {}
   create(createPostDto: CreatePostDto) {
     return 'This action adds a new post';
   }
 
-  findAll() {
-    return `This action returns all posts`;
+  async findAll(): Promise<PostEntity[]> {
+    return this.postsDAO.findAll();
   }
 
   findOne(id: number) {
