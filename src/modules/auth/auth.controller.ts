@@ -1,11 +1,6 @@
 import { Controller, Get, Query, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { HttpService } from '@nestjs/axios';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { ConfigService } from '@nestjs/config';
-import { Observable, map } from 'rxjs';
-import { AxiosResponse } from 'axios';
 
 @Controller('auth')
 export class AuthController {
