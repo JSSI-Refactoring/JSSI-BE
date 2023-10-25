@@ -5,7 +5,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export class CommonPkEntity {
+export class CommonPk {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 

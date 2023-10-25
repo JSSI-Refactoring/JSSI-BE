@@ -7,11 +7,11 @@ dotenv.config({ path: `${PROJECT_SRC_ROOT}/../.env.dev` });
 
 export const ormConfig: DataSourceOptions = {
   type: 'mysql',
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
+  host: process.env.DATABASE_HOST,
+  port: parseInt(process.env.DATABASE_PORT),
+  username: process.env.DATABASE_USERNAME,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_DATABASE,
   entities: ['src/**/*.entity{.ts,.js}'],
   logging: true,
   synchronize: true,

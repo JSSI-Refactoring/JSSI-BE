@@ -6,13 +6,13 @@ import {
   OneToMany,
   OneToOne,
 } from 'typeorm';
-import { CommonPkEntity } from './common/common.entity';
-import { GoalEntity } from './goal.entity';
-import { UserEntity } from './user.entity';
-import { CommentEntity } from './comment.entity';
+import { CommonPk } from '@entities/common/common.entity';
+import { Goal } from '@entities/goal.entity';
+import { User } from '@entities/user.entity';
+import { Comment } from '@entities/comment.entity';
 
 @Entity('Post')
-export class PostEntity extends CommonPkEntity {
+export class Post extends CommonPk {
   @Column('int', { unique: true, nullable: false })
   goalId: number;
 
@@ -20,16 +20,16 @@ export class PostEntity extends CommonPkEntity {
   userId: number;
 
   // user: 다대일
-  @ManyToOne(() => UserEntity, (user) => user.posts)
+  @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
-  user: UserEntity;
+  user: User;
 
   // goal: 일대일
-  @OneToOne(() => PostEntity)
+  @OneToOne(() => Post)
   @JoinColumn({ name: 'goalId' })
-  goal: GoalEntity;
+  goal: Goal;
 
   // comment: 일대다
-  @OneToMany(() => CommentEntity, (comment) => comment.post)
-  comments: CommentEntity[];
+  @OneToMany(() => Comment, (comment) => comment.post)
+  comments: Comment[];
 }
