@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
-import { AuthRepository } from './auth.repository';
+import { AuthDAO } from './models/auth.dao';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly authRepository: AuthRepository) {}
+  constructor(
+    private readonly authDAO: AuthDAO,
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {}
 
-  async kakaoLogin() {
-    return await this.authRepository.kakaoLogin();
+  async kakaoRedirect(code: string) {
+    
   }
 }
