@@ -17,8 +17,8 @@ export class AuthController {
   }
 
   // 2. 1-1에 리다이렉트 후 발급된 인가코드로 카카오에 토큰 발급 요청
-  @Get('/redirect')
-  async kakaoRedirect(@Query() query) {
+  @Get('/kakaoCallback')
+  async redirectKakaoToGetAccessToken(@Query() query) {
     const { code } = query;
     const apiKey = this.apiKey;
     const redirectUri = this.redirectUri;
