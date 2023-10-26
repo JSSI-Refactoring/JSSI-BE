@@ -24,6 +24,6 @@ export class AuthController {
     const redirectUri = this.redirectUri;
 
     // 2-1. 카카오에 토큰 발급 요청 받으러 가는 중
-    return await this.authService.requestAccessTokenToKakao(apiKey, redirectUri, code);
+    const myToken = await this.authService.requestAccessTokenToKakao(apiKey, redirectUri, code);
   }
 }
