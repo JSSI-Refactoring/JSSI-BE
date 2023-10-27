@@ -21,7 +21,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         /** EntityMetadataNotFoundError: No metadata for X was found */
         //  entities: [__dirname + '/**/*.entity{.ts,.js}'],
         //  autoLoadEntities: true
-        logging: true,
+        logging: false,
         synchronize: false,
       }),
       inject: [ConfigService],
