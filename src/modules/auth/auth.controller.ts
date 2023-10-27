@@ -25,5 +25,7 @@ export class AuthController {
 
     // 2-1. 카카오에 토큰 발급 요청 받으러 가는 중
     const myToken = await this.authService.requestAccessTokenToKakao(apiKey, redirectUri, code);
+    const { token } = myToken;
+    return { token };
   }
 }
