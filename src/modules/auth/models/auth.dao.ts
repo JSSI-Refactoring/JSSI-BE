@@ -17,7 +17,7 @@ export class AuthDAO {
     // 2-5. 신규 회원 유무 판단
     const checkThisUser = await this.userRepository.findOne({ where: { socialId } });
     const isNewUser = !checkThisUser; // checkThisUser가 없으면 true, 있으면 false
-    console.log(`이 유저는 새로운 유저인가요: ${isNewUser}`);
+    console.log(`isNewUser? ${isNewUser}`);
 
     // 2-6. 페이로드 값 세팅(추가)
     const userPayload = {
