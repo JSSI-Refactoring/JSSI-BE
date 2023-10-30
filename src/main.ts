@@ -5,6 +5,7 @@ async function bootstrap() {
   const port = 3000;
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api', { exclude: ['health'] });
+  app.enableCors({ origin: ['http://3.34.135.198/'], credentials: true, exposedHeaders: ['Authorization'] });
 
   await app.listen(port);
   console.log(`Server is running on ${port}`);
