@@ -29,9 +29,9 @@ export class AuthController {
     const myToken = await this.authService.requestAccessTokenToKakao(apiKey, redirectUri, code);
     const { token } = myToken;
 
-    const response = await axios.get('http://localhost:3000', { headers: { Authorization: `Bearer: ${token}` } });
-    console.log('::::', response.data);
     res.redirect(302, 'http://localhost:3000');
+    const response = await axios.get('http://localhost:3000', { headers: { Authorization: `Bearer: ${token}` } });
+    console.log(response);
 
     /** Authorization: <type> <credentials> */
     // res.setHeader('Authorization', `Bearer: ${token}`);
