@@ -1,6 +1,7 @@
 import { Controller, Get, Query, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -18,7 +19,7 @@ export class AuthController {
 
   // 2. 1-1에 리다이렉트 후 발급된 인가코드로 카카오에 토큰 발급 요청
   @Get('/kakaoCallback')
-  async redirectKakaoToGetAccessToken(@Query() query) {
+  async redirectKakaoToGetAccessToken(@Query() query, @Res() res: Response) {
     const { code } = query;
     const apiKey = this.apiKey;
     const redirectUri = this.redirectUri;
@@ -26,6 +27,9 @@ export class AuthController {
     // 2-1. 카카오에 토큰 발급 요청 받으러 가는 중
     const myToken = await this.authService.requestAccessTokenToKakao(apiKey, redirectUri, code);
     const { token } = myToken;
-    return { token };
+
+    /** Authorization: <type> <credentials> */
+    res.setHeader('Authorization', `Bearer: ${token}`);
+    res.redirect(302, 'http://localhost:3000');
   }
 }
