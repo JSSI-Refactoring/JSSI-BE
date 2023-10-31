@@ -2,6 +2,7 @@ import { Controller, Get, Query, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
+import axios from 'axios';
 
 @Controller('auth')
 export class AuthController {
@@ -28,8 +29,16 @@ export class AuthController {
     const myToken = await this.authService.requestAccessTokenToKakao(apiKey, redirectUri, code);
     const { token } = myToken;
 
-    /** Authorization: <type> <credentials> */
-    res.setHeader('Authorization', `Bearer: ${token}`);
+    const response = await axios.get('http://localhost:3000', { headers: { Authorization: `Bearer: ${token}` } });
+    console.log('::::', response.data);
     res.redirect(302, 'http://localhost:3000');
+
+    /** Authorization: <type> <credentials> */
+    // res.setHeader('Authorization', `Bearer: ${token}`);
+    // return { token };
+    // res.redirect(302, 'http://localhost:3000');
   }
 }
+
+// 1. 링크 연결 시 api 요청도 같이 보냄
+// 2. 요청의 리턴값을 카카오 콜백에서 받은 것을
