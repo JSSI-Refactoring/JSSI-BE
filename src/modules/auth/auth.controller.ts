@@ -29,16 +29,6 @@ export class AuthController {
     const myToken = await this.authService.requestAccessTokenToKakao(apiKey, redirectUri, code);
     const { token } = myToken;
 
-    res.redirect(302, 'http://localhost:3000');
-    const response = await axios.get('http://localhost:3000', { headers: { Authorization: `Bearer: ${token}` } });
-    console.log(response);
-
-    /** Authorization: <type> <credentials> */
-    // res.setHeader('Authorization', `Bearer: ${token}`);
-    // return { token };
-    // res.redirect(302, 'http://localhost:3000');
+    res.redirect(302, `http://localhost:3000/loading?token=${token}`);
   }
 }
-
-// 1. 링크 연결 시 api 요청도 같이 보냄
-// 2. 요청의 리턴값을 카카오 콜백에서 받은 것을
