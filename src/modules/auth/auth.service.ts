@@ -21,10 +21,10 @@ export class AuthService {
       redirect_uri: redirectUri,
       code,
     });
-    console.log(`1 ${redirectUri}까지 세팅을 마쳤어요`);
+    console.log(`1 ${redirectUri}`);
 
     // 2-3. 토큰 발급 성공
-    console.log('2 토큰 발급하러 갑니다');
+    console.log(`2 token go`);
     const response = await axios.post(urlToRequest, body, { headers });
     const tokens = { accessToken: response.data.access_token, refreshToken: response.data.refresh_token };
 
