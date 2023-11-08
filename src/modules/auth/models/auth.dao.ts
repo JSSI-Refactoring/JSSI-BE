@@ -1,4 +1,5 @@
 import { User } from '@entities/user.entity';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,6 +8,7 @@ export class AuthDAO {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async kakaoSignIn(tokens, userInfo) {
@@ -33,6 +35,11 @@ export class AuthDAO {
     }
 
     // 기존 회원일 경우 서버에서 로그인 세션 또는 토큰 발급
-    return { token: await this.jwtService.signAsync(userPayload) };
+    return {
+      token: await this.jwtService.signAsync(userPayload, {
+        secret: this.configService.get('JWT_SECRET'),
+        expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
+      }),
+    };
   }
 }
