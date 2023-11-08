@@ -34,11 +34,11 @@ export class AuthController {
       const { code } = query;
       const apiKey = this.apiKey;
       const redirectUri = this.redirectUri;
+      console.log(code, redirectUri);
 
       // 2-1. 카카오에 토큰 발급 요청 받으러 가는 중
       const myToken = await this.authService.requestAccessTokenToKakao(apiKey, redirectUri, code);
       const { token } = myToken;
-      console.log(`1, ${token}`);
 
       const kakaoResponse: KakaoLoginResponseDto = new KakaoLoginResponseDto();
       kakaoResponse.token = token;
