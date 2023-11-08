@@ -12,29 +12,22 @@ export class AuthController {
   apiKey = this.configService.get('KAKAO_REST_API_KEY');
   redirectUri = this.configService.get('KAKAO_REDIRECT_URI');
 
-  // 2. 프론트에서 발급 받은 인가코드로 카카오에 토큰 발급 요청
+  // 프론트에서 발급 받은 인가코드로 카카오에 토큰 발급 요청
   @Post('/kakaoLogin')
-  async redirectKakaoToGetAccessToken(@Query() query): Promise<CommonResponseDto<KakaoLoginResponseDto>> {
+  async kakaoLogin(@Query() query): Promise<CommonResponseDto<KakaoLoginResponseDto>> {
     try {
       const { code } = query;
       const apiKey = this.apiKey;
       const redirectUri = this.redirectUri;
 
-      // 2-1. 카카오에 토큰 발급 요청 받으러 가는 중
-      const myToken = await this.authService.requestAccessTokenToKakao(apiKey, redirectUri, code);
+      // 카카오에 토큰 발급 요청
+      const myToken = await this.authService.requestTokensToKakao(apiKey, redirectUri, code);
       const { token } = myToken;
 
+      // 응답 형식에 맞게 지정
       const kakaoResponse: KakaoLoginResponseDto = new KakaoLoginResponseDto();
       kakaoResponse.token = token;
 
-      console.log(`before return ${token}`);
-
-      // res.status(200).json({
-      //   status: true,
-      //   statusCode: 200,
-      //   message: '카카오 토큰 발급 성공',
-      //   result: kakaoResponse,
-      // });
       return {
         status: true,
         statusCode: 200,
