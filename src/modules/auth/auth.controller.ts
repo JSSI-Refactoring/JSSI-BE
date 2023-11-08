@@ -14,10 +14,7 @@ export class AuthController {
 
   // 2. 프론트에서 발급 받은 인가코드로 카카오에 토큰 발급 요청
   @Post('/kakaoLogin')
-  async redirectKakaoToGetAccessToken(
-    @Query() query,
-    @Res() res: Response,
-  ) /* : Promise<CommonResponseDto<KakaoLoginResponseDto>>  */ {
+  async redirectKakaoToGetAccessToken(@Query() query): Promise<CommonResponseDto<KakaoLoginResponseDto>> {
     try {
       const { code } = query;
       const apiKey = this.apiKey;
@@ -32,18 +29,18 @@ export class AuthController {
 
       console.log(`before return ${token}`);
 
-      res.status(200).json({
-        status: true,
-        statusCode: 200,
-        message: '카카오 토큰 발급 성공',
-        result: kakaoResponse,
-      });
-      // return {
+      // res.status(200).json({
       //   status: true,
       //   statusCode: 200,
       //   message: '카카오 토큰 발급 성공',
       //   result: kakaoResponse,
-      // };
+      // });
+      return {
+        status: true,
+        statusCode: 200,
+        message: '카카오 토큰 발급 성공',
+        result: kakaoResponse,
+      };
     } catch (err) {
       console.log(err);
       throw new InternalServerErrorException('Internal server error');
