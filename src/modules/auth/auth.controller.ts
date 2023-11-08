@@ -14,20 +14,23 @@ export class AuthController {
   redirectUri = this.configService.get('KAKAO_REDIRECT_URI');
 
   // 1. 카카오 로그인 인가코드 발급
-  @Get('/kakao')
-  async kakaoLogin(@Res() res) {
-    try {
-      const url = `https://kauth.kakao.com/oauth/authorize?client_id=${this.apiKey}&redirect_uri=${this.redirectUri}&response_type=code`;
-      return res.redirect(302, url); // 1-1. 인가코드 발급을 위해 redirect_uri로 리다이렉트
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException('Internal server error');
-    }
-  }
+  // @Get('/kakao')
+  // async kakaoLogin(@Res() res) {
+  //   try {
+  //     const url = `https://kauth.kakao.com/oauth/authorize?client_id=${this.apiKey}&redirect_uri=${this.redirectUri}&response_type=code`;
+  //     return res.redirect(302, url); // 1-1. 인가코드 발급을 위해 redirect_uri로 리다이렉트
+  //   } catch (err) {
+  //     console.log(err);
+  //     throw new InternalServerErrorException('Internal server error');
+  //   }
+  // }
 
   // 2. 1-1에 리다이렉트 후 발급된 인가코드로 카카오에 토큰 발급 요청
-  @Get('/kakaoCallback')
-  async redirectKakaoToGetAccessToken(@Query() query, @Res() res: Response): Promise<CommonResponseDto<KakaoLoginResponseDto>> {
+  @Get('/kakaoLogin')
+  async redirectKakaoToGetAccessToken(
+    @Query() query,
+    @Res() res: Response,
+  ): Promise<CommonResponseDto<KakaoLoginResponseDto>> {
     try {
       const { code } = query;
       const apiKey = this.apiKey;
@@ -38,16 +41,15 @@ export class AuthController {
       const { token } = myToken;
       console.log(`1, ${token}`);
 
-      const kakaoResponse: KakaoLoginResponseDto = new KakaoLoginResponseDto()
-      kakaoResponse.token = token
+      const kakaoResponse: KakaoLoginResponseDto = new KakaoLoginResponseDto();
+      kakaoResponse.token = token;
 
       return {
         status: true,
         statusCode: 200,
-        message: "카카오 토큰 발급 성공",
-        result: kakaoResponse
-      }
-      
+        message: '카카오 토큰 발급 성공',
+        result: kakaoResponse,
+      };
     } catch (err) {
       console.log(err);
       throw new InternalServerErrorException('Internal server error');
