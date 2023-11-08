@@ -10,6 +10,7 @@ export class AuthService {
 
   // 2-2. 카카오 토큰 발급 요청 Service
   async requestAccessTokenToKakao(apiKey, redirectUri, code) {
+    console.log(`apiKey ${apiKey}`);
     const urlToRequest = 'https://kauth.kakao.com/oauth/token';
     const headers = {
       'Content-type': `application/x-www-form-urlencoded;charset=utf-8`,
@@ -22,10 +23,9 @@ export class AuthService {
       code,
     });
 
+    console.log(`token go`);
     // 2-3. 토큰 발급 성공
     const response = await axios.post(urlToRequest, body, { headers });
-    console.log('::::::', response.data);
-
     const tokens = { accessToken: response.data.access_token, refreshToken: response.data.refresh_token };
 
     // 2-4. 발급받은 토큰으로 카카오 회원 정보 요청
