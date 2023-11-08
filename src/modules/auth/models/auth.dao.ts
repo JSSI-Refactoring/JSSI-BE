@@ -32,6 +32,7 @@ export class AuthDAO {
       userPayload.id = createUser.id;
     }
 
+    console.log(1);
     // 2-8. 기존 회원일 경우 서버에서 로그인 세션 또는 토큰 발급
     return { token: await this.jwtService.signAsync(userPayload) };
   }

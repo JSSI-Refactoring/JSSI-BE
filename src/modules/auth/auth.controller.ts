@@ -1,8 +1,7 @@
-import { Controller, Get, Query, Res, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Post, Get, Query, Res, InternalServerErrorException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
-import axios from 'axios';
 import { CommonResponseDto } from 'src/common/dto/reponse.dto';
 import { KakaoLoginResponseDto } from './dto/response/kakao-login.dto';
 
@@ -26,7 +25,7 @@ export class AuthController {
   // }
 
   // 2. 1-1에 리다이렉트 후 발급된 인가코드로 카카오에 토큰 발급 요청
-  @Get('/kakaoLogin')
+  @Post('/kakaoLogin')
   async redirectKakaoToGetAccessToken(
     @Query() query,
     @Res() res: Response,
@@ -44,6 +43,7 @@ export class AuthController {
       const kakaoResponse: KakaoLoginResponseDto = new KakaoLoginResponseDto();
       kakaoResponse.token = token;
 
+      console.log(2);
       return {
         status: true,
         statusCode: 200,
