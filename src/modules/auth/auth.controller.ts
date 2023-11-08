@@ -43,7 +43,6 @@ export class AuthController {
       const kakaoResponse: KakaoLoginResponseDto = new KakaoLoginResponseDto();
       kakaoResponse.token = token;
 
-      console.log(2);
       return {
         status: true,
         statusCode: 200,

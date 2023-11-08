@@ -21,11 +21,11 @@ export class AuthService {
       redirect_uri: redirectUri,
       code,
     });
-    console.log(`1 ${redirectUri}`);
 
     // 2-3. 토큰 발급 성공
-    console.log(`2 token go`);
     const response = await axios.post(urlToRequest, body, { headers });
+    console.log('::::::', response.data);
+
     const tokens = { accessToken: response.data.access_token, refreshToken: response.data.refresh_token };
 
     // 2-4. 발급받은 토큰으로 카카오 회원 정보 요청
