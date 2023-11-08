@@ -21,8 +21,10 @@ export class AuthService {
       redirect_uri: redirectUri,
       code,
     });
+    console.log(`1 ${redirectUri}까지 세팅을 마쳤어요`);
 
     // 2-3. 토큰 발급 성공
+    console.log('2 토큰 발급하러 갑니다');
     const response = await axios.post(urlToRequest, body, { headers });
     const tokens = { accessToken: response.data.access_token, refreshToken: response.data.refresh_token };
 
@@ -30,8 +32,8 @@ export class AuthService {
     const getUserInfo = await axios.get('https://kapi.kakao.com/v2/user/me', {
       headers: { Authorization: `Bearer ${tokens.accessToken}` },
     });
-
     const userInfo = getUserInfo.data;
+
     return await this.authDAO.kakaoSignIn(tokens, userInfo);
   }
 }
