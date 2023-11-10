@@ -18,6 +18,12 @@ export class User extends CommonPk {
   @Column('varchar', { unique: false, nullable: false })
   profileImage: string;
 
+  @Column('varchar', { unique: true, nullable: false })
+  OAuthRefreshToken;
+
+  @Column('varchar', { unique: true, nullable: false })
+  refreshToken;
+
   // goal: 일대다
   @OneToMany(() => Goal, (goal) => goal.user)
   goals: Goal[];
