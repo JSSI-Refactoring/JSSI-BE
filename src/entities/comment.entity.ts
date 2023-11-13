@@ -4,7 +4,7 @@ import { User } from '@entities/user.entity';
 import { Post } from '@entities/post.entity';
 // import { Post } from './post.entity';
 
-@Entity('Comment')
+@Entity({ name: 'comment', schema: 'jssi' })
 export class Comment extends CommonPk {
   @Column('int', { unique: false, nullable: false })
   userId: number;

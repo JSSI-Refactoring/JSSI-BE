@@ -4,7 +4,7 @@ import { User } from '@entities/user.entity';
 import { Video } from '@entities/video.entity';
 import { Post } from '@entities/post.entity';
 
-@Entity('Goal')
+@Entity({ name: 'goal', schema: 'jssi' })
 export class Goal extends CommonPk {
   @Column('varchar', { unique: false, nullable: false })
   title: string;

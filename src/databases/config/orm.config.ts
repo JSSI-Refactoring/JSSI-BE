@@ -14,5 +14,7 @@ export const ormConfig: DataSourceOptions = {
   database: process.env.DATABASE_DATABASE,
   entities: ['src/**/*.entity{.ts,.js}'],
   logging: true,
-  synchronize: true,
+  synchronize: false,
+  migrationsRun: false,
+  // dropSchema: true,
 };

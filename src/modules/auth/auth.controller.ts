@@ -7,10 +7,8 @@ import { KakaoLoginResponseDto } from './dto/response/kakao-login.dto';
 
 /** https://bobbyhadz.com/blog/typescript-property-does-not-exist-on-type */
 type KakaoLogin = {
-  data?: {
-    refreshToken: string;
-    accessToken: string;
-  };
+  refreshToken: string;
+  accessToken: string;
 };
 
 @Controller('auth')
@@ -34,30 +32,30 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<CommonResponseDto<KakaoLoginResponseDto>> {
     try {
+      // 최종 수정 필요
       const { code } = query;
       const apiKey = this.apiKey;
       const redirectUri = this.redirectUri;
 
       const kakaoLogin: KakaoLogin = await this.authService.kakaoLogin(apiKey, redirectUri, code);
 
-      // 응답 형식에 맞게 지정
       const kakaoResponse: KakaoLoginResponseDto = new KakaoLoginResponseDto();
-      kakaoResponse.accessToken = kakaoLogin.data.accessToken;
+      kakaoResponse.accessToken = kakaoLogin.accessToken;
 
-      res.setHeader('Authorization', `Bearer ${kakaoLogin.data.refreshToken}`);
-      res.cookie('refresh_token', kakaoLogin.data.refreshToken, {
+      res.setHeader('Authorization', `Bearer ${kakaoLogin.refreshToken}`);
+      res.cookie('refresh_token', kakaoLogin.refreshToken, {
         httpOnly: true,
         // maxAge: 24 * 60 * 60 * 1000 쿠키 유효 기간(하루)
       });
 
       return {
         status: true,
-        statusCode: 200,
-        message: '카카오 토큰 발급 성공',
+        statusCode: 201,
+        message: '카카오 로그인 성공',
         result: kakaoResponse,
       };
     } catch (err) {
-      // console.log(err);
+      console.log(err);
       throw new InternalServerErrorException('Internal server error');
     }
   }
