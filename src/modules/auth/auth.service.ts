@@ -16,7 +16,7 @@ export class AuthService {
 
   async kakaoLogin(apiKey, redirectUri, code) {
     const requestTokensToKakao = await this.requestTokensToKakao(apiKey, redirectUri, code);
-    const kakaoTokens = requestTokensToKakao.data;
+    const kakaoTokens = requestTokensToKakao;
 
     const requestUserInfoToKakao = await this.requestUserInfoToKakao(kakaoTokens);
     const { isNewUser, userInfo } = requestUserInfoToKakao;
@@ -77,9 +77,8 @@ export class AuthService {
 
     const response = await axios.post(urlToRequest, body, { headers });
     const kakaoTokens = { accessToken: response.data.access_token, refreshToken: response.data.refresh_token };
-    const result = { data: kakaoTokens };
 
-    return result;
+    return { kakaoTokens };
   }
 
   /** 카카오 회원 정보 요청 */
