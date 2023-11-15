@@ -4,12 +4,13 @@ import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import { CommonResponseDto } from 'src/common/dto/reponse.dto';
 import { KakaoLoginResponseDto } from './dto/response/kakao-login.dto';
+import { KakaoLoginRequestDto } from './dto/request/kakao-login.dto';
 
 /** https://bobbyhadz.com/blog/typescript-property-does-not-exist-on-type */
-type KakaoLogin = {
-  refreshToken: string;
-  accessToken: string;
-};
+interface KakaoLogin {
+  refreshToken: string | Promise<string>;
+  accessToken: string | Promise<string>;
+}
 
 @Controller('auth')
 export class AuthController {
@@ -32,12 +33,14 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<CommonResponseDto<KakaoLoginResponseDto>> {
     try {
-      // 최종 수정 필요
-      const { code } = query;
-      const apiKey = this.apiKey;
-      const redirectUri = this.redirectUri;
+      const { code }: { code: string } = query;
 
-      const kakaoLogin: KakaoLogin = await this.authService.kakaoLogin(apiKey, redirectUri, code);
+      const kakaoLoginRequestDto: KakaoLoginRequestDto = new KakaoLoginRequestDto();
+      kakaoLoginRequestDto.apiKey = this.apiKey;
+      kakaoLoginRequestDto.redirectUri = this.redirectUri;
+      kakaoLoginRequestDto.code = code;
+
+      const kakaoLogin: KakaoLogin = await this.authService.kakaoLogin(kakaoLoginRequestDto);
 
       const kakaoResponse: KakaoLoginResponseDto = new KakaoLoginResponseDto();
       kakaoResponse.accessToken = kakaoLogin.accessToken;

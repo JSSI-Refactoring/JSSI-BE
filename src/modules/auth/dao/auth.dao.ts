@@ -43,6 +43,17 @@ export class AuthDAO {
       .execute();
   }
 
+  async updateAppAccessTokenOfUser(id, accessToken) {
+    return await this.userRepository
+      .createQueryBuilder()
+      .update(User)
+      .set({
+        accessToken,
+      })
+      .where(id)
+      .execute();
+  }
+
   // async kakaoSignIn(kakaoTokens, userInfo) {
   //   const socialId = userInfo.id;
   //   const { nickname } = userInfo.properties;

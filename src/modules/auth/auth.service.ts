@@ -5,8 +5,10 @@ import * as querystring from 'querystring';
 import axios from 'axios';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { KakaoLoginRequestDto } from './dto/request/kakao-login.dto';
+import { KakaoTokensParam } from './dto/param/kakaoTokens.param';
 
-type UserInfo = {
+interface UserInfo {
   id: number;
   connected_at: string;
   properties: {
@@ -24,13 +26,28 @@ type UserInfo = {
       is_default_image: boolean;
     };
   };
-};
+}
 
-type RequestUserInfoToKaKao = {
+interface RequestUserInfoToKaKao {
   isNewUser: boolean;
   data?: object;
   userInfo?: UserInfo;
-};
+}
+
+interface FindOneUserInfo {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: null | Date;
+  socialId: string;
+  socialType: 'KAKAO' | string;
+  nickname: string;
+  profileImage: string;
+  OAuthRefreshToken: string;
+  OAuthAccessToken: string;
+  refreshToken: string;
+  accessToken: string;
+}
 
 @Injectable()
 export class AuthService {
@@ -40,8 +57,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async kakaoLogin(apiKey: string, redirectUri: string, code: string) {
-    const requestTokensToKakao = await this.requestTokensToKakao(apiKey, redirectUri, code);
+  async kakaoLogin(kakaoLoginRequestDto: KakaoLoginRequestDto) {
+    const requestTokensToKakao = await this.requestTokensToKakao(kakaoLoginRequestDto);
     const { kakaoTokens } = requestTokensToKakao;
 
     const requestUserInfoToKakao = await this.requestUserInfoToKakao(kakaoTokens);
@@ -49,7 +66,6 @@ export class AuthService {
 
     // 신규 회원일 때
     // 회원 등록
-    let result = {};
     if (isNewUser) {
       const { userInfo } = requestUserInfoToKakao;
       const createUser = await this.authDAO.createUser(userInfo, kakaoTokens);
@@ -65,24 +81,29 @@ export class AuthService {
         hash: hashIndex,
       };
 
-      // prettier-ignore
-      const [refreshToken, accessToken] = [ this.generateRefreshToken(refreshPayload), this.generateAccessToken(accessPayload) ];
-      const updateAppTokenOfUser = await this.authDAO.updateAppTokensOfUser(createUser.id, refreshToken, accessToken);
+      const [refreshToken, accessToken] = [
+        this.generateRefreshToken(refreshPayload),
+        this.generateAccessToken(accessPayload),
+      ];
+      await this.authDAO.updateAppTokensOfUser(createUser.id, refreshToken, accessToken);
 
       return { refreshToken, accessToken };
     }
 
-    const { data } = requestUserInfoToKakao;
-    console.log(data);
     // 기존 회원일 때
-    // 액세스 토큰 유효기간 확인
+    const data = requestUserInfoToKakao.data as FindOneUserInfo;
+    const { id, nickname, profileImage, refreshToken, accessToken } = data;
+    const decodeAccessToken: boolean = await this.decodeAccessToken(accessToken);
 
-    // 유효기간 만료: 새로운 액세스 토큰 발급
-    // 유효기간 만료X: 해당 액세스 토큰 반환
+    if (decodeAccessToken === false) {
+      const reAccessToken = await this.regenerateAndUpdateAccessToken(id, nickname, profileImage);
+      return { refreshToken, accessToken: reAccessToken };
+    }
+    return { refreshToken, accessToken };
   }
 
   /** 카카오 토큰 요청 */
-  async requestTokensToKakao(apiKey: string, redirectUri: string, code: string) {
+  async requestTokensToKakao(kakaoLoginRequestDto: KakaoLoginRequestDto): Promise<{ kakaoTokens: KakaoTokensParam }> {
     const urlToRequest = 'https://kauth.kakao.com/oauth/token';
     const headers = {
       'Content-type': `application/x-www-form-urlencoded;charset=utf-8`,
@@ -90,13 +111,16 @@ export class AuthService {
     const body = querystring.stringify({
       // header의 해당 Content-Type으로 인해
       grant_type: 'authorization_code',
-      client_id: apiKey,
-      redirect_uri: redirectUri,
-      code,
+      client_id: kakaoLoginRequestDto.apiKey,
+      redirect_uri: kakaoLoginRequestDto.redirectUri,
+      code: kakaoLoginRequestDto.code,
     });
 
     const response = await axios.post(urlToRequest, body, { headers });
-    const kakaoTokens = { refreshToken: response.data.refresh_token, accessToken: response.data.access_token };
+    const kakaoTokens: KakaoTokensParam = {
+      refreshToken: response.data.refresh_token,
+      accessToken: response.data.access_token,
+    };
 
     return { kakaoTokens };
   }
@@ -120,32 +144,68 @@ export class AuthService {
 
   // 추후에 jwt provider로 분리
   /** 리프레쉬 토큰 발급 */
-  private generateRefreshToken(payload) {
-    return this.jwtService.sign(payload, {
+  private async generateRefreshToken(payload) {
+    return await this.jwtService.signAsync(payload, {
       secret: this.configService.get('JWT_REFRESH_SECRET'),
       expiresIn: this.configService.get('JWT_REFRESH_EXPIRATION_TIME'),
     });
   }
 
-  private decodeRefreshToken(refreshToekn) {
-    return this.jwtService.verify(refreshToekn, { secret: this.configService.get('JWT_REFRESH_SECRET') });
+  private async decodeRefreshToken(refreshToken: string) {
+    try {
+      const decodedToken = await this.jwtService.verifyAsync(refreshToken, {
+        secret: this.configService.get('JWT_REFRESH_SECRET'),
+      });
+
+      return decodedToken;
+    } catch (err: any) {
+      if (err.name === 'TokenExpiredError') {
+        return false;
+      } else {
+        throw err;
+      }
+    }
   }
 
   /** 액세스 토큰 발급 */
-  private generateAccessToken(payload) {
-    return this.jwtService.sign(payload, {
+  private async generateAccessToken(payload) {
+    return await this.jwtService.signAsync(payload, {
       secret: this.configService.get('JWT_ACCESS_SECRET'),
       expiresIn: this.configService.get('JWT_ACCESS_EXPIRATION_TIME'),
     });
   }
 
-  private decodeAccessToken(accessToken) {
-    return this.jwtService.verify(accessToken, { secret: this.configService.get('JWT_ACCESS_SECRET') });
+  private async decodeAccessToken(accessToken: string) {
+    try {
+      const decodedToken = await this.jwtService.verifyAsync(accessToken, {
+        secret: this.configService.get('JWT_ACCESS_SECRET'),
+      });
+
+      return decodedToken; // 토큰이 유효하면 payload를 반환
+    } catch (err: any) {
+      if (err.name === 'TokenExpiredError') {
+        return false; // 토큰이 만료되었을 경우 false 반환
+      } else {
+        throw err; // 다른 JWT 오류에 대해서는 예외를 다시 던짐
+      }
+    }
   }
 
   /** 리프레쉬 토큰 인덱스 암호화 */
   private async hashUserIdForRefreshToken(id) {
     const result = await bcrypt.hash(id.toString(), 10);
     return result;
+  }
+
+  private async regenerateAndUpdateAccessToken(id, nickname, profileImage): Promise<string> {
+    const accessPayload = {
+      id: id,
+      nickname: nickname,
+      profileImage: profileImage,
+    };
+    const reAccessToken = this.generateAccessToken(accessPayload);
+    await this.authDAO.updateAppAccessTokenOfUser(id, reAccessToken);
+
+    return reAccessToken;
   }
 }
