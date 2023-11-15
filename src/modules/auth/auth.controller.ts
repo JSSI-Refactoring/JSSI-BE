@@ -3,14 +3,9 @@ import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import { CommonResponseDto } from 'src/common/dto/reponse.dto';
-import { KakaoLoginResponseDto } from './dto/response/kakao-login.dto';
-import { KakaoLoginRequestDto } from './dto/request/kakao-login.dto';
-
-/** https://bobbyhadz.com/blog/typescript-property-does-not-exist-on-type */
-interface KakaoLogin {
-  refreshToken: string | Promise<string>;
-  accessToken: string | Promise<string>;
-}
+import { KakaoLoginResponseDto } from './dto/response/kakao-login.res.dto';
+import { KakaoLoginRequestDto } from './dto/request/kakao-login.req.dto';
+import { KakaoLogin } from 'src/interfaces/auth/kakao-login.interface';
 
 @Controller('auth')
 export class AuthController {
