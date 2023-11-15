@@ -1,17 +1,10 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { CommonPk } from '@entities/common/common.entity';
 import { Goal } from '@entities/goal.entity';
 import { User } from '@entities/user.entity';
 import { Comment } from '@entities/comment.entity';
 
-@Entity('Post')
+@Entity({ name: 'post', schema: 'jssi' })
 export class Post extends CommonPk {
   @Column('int', { unique: true, nullable: false })
   goalId: number;

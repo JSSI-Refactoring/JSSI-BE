@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { CommonPk } from '@entities/common/common.entity';
 import { Goal } from '@entities/goal.entity';
 
-@Entity('Video')
+@Entity({ name: 'video', schema: 'jssi' })
 export class Video extends CommonPk {
   @Column('varchar', { unique: false, nullable: true })
   video1: string;

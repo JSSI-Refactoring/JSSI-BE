@@ -4,7 +4,7 @@ import { Goal } from '@entities/goal.entity';
 import { Post } from '@entities/post.entity';
 import { Comment } from '@entities/comment.entity';
 
-@Entity('User')
+@Entity({ name: 'user', schema: 'jssi' })
 export class User extends CommonPk {
   @Column('varchar', { unique: true, nullable: false })
   socialId: string;
@@ -17,6 +17,18 @@ export class User extends CommonPk {
 
   @Column('varchar', { unique: false, nullable: false })
   profileImage: string;
+
+  @Column('varchar', { unique: true, nullable: false })
+  OAuthRefreshToken: string;
+
+  @Column('varchar', { unique: true, nullable: false })
+  OAuthAccessToken: string;
+
+  @Column('varchar', { unique: true, nullable: true })
+  refreshToken: string;
+
+  @Column('varchar', { unique: true, nullable: true })
+  accessToken: string;
 
   // goal: 일대다
   @OneToMany(() => Goal, (goal) => goal.user)

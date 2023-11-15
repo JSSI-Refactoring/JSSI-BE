@@ -3,7 +3,9 @@ import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import { CommonResponseDto } from 'src/common/dto/reponse.dto';
-import { KakaoLoginResponseDto } from './dto/response/kakao-login.dto';
+import { KakaoLoginResponseDto } from './dto/response/kakao-login.res.dto';
+import { KakaoLoginRequestDto } from './dto/request/kakao-login.req.dto';
+import { KakaoLogin } from 'src/interfaces/auth/kakao-login.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -14,24 +16,33 @@ export class AuthController {
 
   // 프론트에서 발급 받은 인가코드로 카카오에 토큰 발급 요청
   @Post('/kakaoLogin')
-  async kakaoLogin(@Query() query): Promise<CommonResponseDto<KakaoLoginResponseDto>> {
+  async kakaoLogin(
+    @Query() query,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<CommonResponseDto<KakaoLoginResponseDto>> {
     try {
-      const { code } = query;
-      const apiKey = this.apiKey;
-      const redirectUri = this.redirectUri;
+      const { code }: { code: string } = query;
 
-      // 카카오에 토큰 발급 요청
-      const myToken = await this.authService.requestTokensToKakao(apiKey, redirectUri, code);
-      const { token } = myToken;
+      const kakaoLoginRequestDto: KakaoLoginRequestDto = new KakaoLoginRequestDto();
+      kakaoLoginRequestDto.apiKey = this.apiKey;
+      kakaoLoginRequestDto.redirectUri = this.redirectUri;
+      kakaoLoginRequestDto.code = code;
 
-      // 응답 형식에 맞게 지정
+      const kakaoLogin: KakaoLogin = await this.authService.kakaoLogin(kakaoLoginRequestDto);
+
       const kakaoResponse: KakaoLoginResponseDto = new KakaoLoginResponseDto();
-      kakaoResponse.token = token;
+      kakaoResponse.accessToken = kakaoLogin.accessToken;
+
+      res.setHeader('Authorization', `Bearer ${kakaoLogin.refreshToken}`);
+      res.cookie('refresh_token', kakaoLogin.refreshToken, {
+        httpOnly: true,
+        // maxAge: 24 * 60 * 60 * 1000 쿠키 유효 기간(하루)
+      });
 
       return {
         status: true,
-        statusCode: 200,
-        message: '카카오 토큰 발급 성공',
+        statusCode: 201,
+        message: '카카오 로그인 성공',
         result: kakaoResponse,
       };
     } catch (err) {
