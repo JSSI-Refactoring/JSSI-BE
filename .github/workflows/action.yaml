@@ -26,12 +26,28 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      # - run: npm install
       - run: npm ci
       - run: npm run build --if-present # build script가 존재하는 경우
 
       - name: create env
-        run: pwd
+        run: |
+          pwd
           touch .env.dev
+          echo DATABASE_DATABASE=${{ secrets.DATABASE_DATABASE }} >> .env.dev
+          echo DATABASE_HOST=${{ secrets.DATABASE_HOST }} >> .env.dev
+          echo DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> .env.dev
+          echo DATABASE_PORT=${{ secrets.DATABASE_PORT }} >> .env.dev
+          echo DATABASE_TYPE=${{ secrets.DATABASE_TYPE }} >> .env.dev
+          echo DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} >> .env.dev
 
+          echo JWT_ACCESS_EXPIRATION_TIME=${{ secrets.JWT_ACCESS_EXPIRATION_TIME }} >> .env.dev
+          echo JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }} >> .env.dev
+          echo JWT_REFRESH_EXPIRATION_TIME=${{ secrets.JWT_REFRESH_EXPIRATION_TIME }} >> .env.dev
+          echo JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} >> .env.dev
+
+          echo KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }} >> .env.dev
+          echo KAKAO_REST_API_KEY=${{ secrets.KAKAO_REST_API_KEY }} >> .env.dev
+
+        - name: confirmation action
+          run: echo "Action completed"
     # - run: npm test
