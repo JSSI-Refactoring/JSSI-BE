@@ -28,7 +28,9 @@ jobs:
 
       - run: npm ci
       - run: npm run build --if-present # build script가 존재하는 경우
-      - run: |
+
+      - name: create env
+        run: |
           pwd
           touch .env.dev
           echo DATABASE_DATABASE=${{ secrets.DATABASE_DATABASE }} >> .env.dev
@@ -46,6 +48,6 @@ jobs:
           echo KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }} >> .env.dev
           echo KAKAO_REST_API_KEY=${{ secrets.KAKAO_REST_API_KEY }} >> .env.dev
 
-        - name: confirmation action
-          run: echo "Action completed "
+      - name: confirmation action
+        run: echo "Action completed"
     # - run: npm test
