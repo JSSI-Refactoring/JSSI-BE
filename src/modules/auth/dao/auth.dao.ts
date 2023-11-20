@@ -1,6 +1,6 @@
 import { User } from '@entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SelectOneUser } from 'src/interfaces/auth/kakao-login.interface';
+import { SelectOneUser } from '@auth/interfaces/kakao-login.interface';
 import { Repository } from 'typeorm';
 
 export class AuthDAO {
