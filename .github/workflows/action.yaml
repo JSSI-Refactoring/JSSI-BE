@@ -28,8 +28,7 @@ jobs:
 
       - run: npm ci
       - run: npm run build --if-present # build script가 존재하는 경우
-      - name: create env
-        run: |
+      - run: |
           pwd
           touch .env.dev
           echo DATABASE_DATABASE=${{ secrets.DATABASE_DATABASE }} >> .env.dev
