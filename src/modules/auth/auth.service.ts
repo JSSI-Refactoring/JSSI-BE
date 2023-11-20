@@ -1,26 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { AuthDAO } from './dao/auth.dao';
-import * as querystring from 'querystring';
-import axios from 'axios';
 import * as bcrypt from 'bcrypt';
 import { KakaoLoginRequestDto } from './dto/request/kakao-login.req.dto';
-import { KakaoTokensParam } from './dto/param/kakaoTokens.param';
 import { JwtProvider } from 'src/providers/jwt/jwt.provider';
-import { FindOneUserInfo, RequestUserInfoToKaKao } from 'src/interfaces/auth/kakao-login.interface';
+import { SelectOneUser } from 'src/interfaces/auth/kakao-login.interface';
+import { KakaoProvider } from 'src/providers/kakao/kakao.provider';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly authDAO: AuthDAO, private readonly jwtProvider: JwtProvider) {}
+  constructor(
+    private readonly authDAO: AuthDAO,
+    private readonly jwtProvider: JwtProvider,
+    private readonly kakaoProvider: KakaoProvider,
+  ) {}
 
   async kakaoLogin(kakaoLoginRequestDto: KakaoLoginRequestDto) {
-    const requestTokensToKakao = await this.requestTokensToKakao(kakaoLoginRequestDto);
+    const requestTokensToKakao = await this.kakaoProvider.requestTokensToKakao(kakaoLoginRequestDto);
     const { kakaoTokens } = requestTokensToKakao;
 
-    const requestUserInfoToKakao = await this.requestUserInfoToKakao(kakaoTokens);
-    const { isNewUser } = requestUserInfoToKakao;
+    const requestUserInfoToKakao = await this.kakaoProvider.requestUserInfoToKakao(kakaoTokens);
+    const { userInfo } = requestUserInfoToKakao;
+    const socialId = userInfo.id;
 
-    // 신규 회원일 때
-    // 회원 등록
+    const selectOneUserBySocialId = await this.authDAO.selectOneUserBySocialId(socialId);
+    const isNewUser = !selectOneUserBySocialId ? true : false;
+
+    let result = undefined;
+    if (!selectOneUserBySocialId) result = { isNewUser, userInfo };
+    else result = { isNewUser, data: selectOneUserBySocialId };
+
+    /* 신규 회원일 때: 회원 등록 */
     if (isNewUser) {
       const { userInfo } = requestUserInfoToKakao;
       const createUser = await this.authDAO.createUser(userInfo, kakaoTokens);
@@ -37,16 +46,16 @@ export class AuthService {
       };
 
       const [refreshToken, accessToken] = [
-        this.jwtProvider.generateRefreshToken(refreshPayload),
-        this.jwtProvider.generateAccessToken(accessPayload),
+        await this.jwtProvider.generateRefreshToken(refreshPayload),
+        await this.jwtProvider.generateAccessToken(accessPayload),
       ];
       await this.authDAO.updateAppTokensOfUser(createUser.id, refreshToken, accessToken);
 
       return { refreshToken, accessToken };
     }
 
-    // 기존 회원일 때
-    const data = requestUserInfoToKakao.data as FindOneUserInfo;
+    /* 기존 회원일 때 */
+    const data = selectOneUserBySocialId as SelectOneUser;
     const { id, nickname, profileImage, refreshToken, accessToken } = data;
     const decodeAccessToken: boolean = await this.jwtProvider.decodeAccessToken(accessToken);
 
@@ -57,48 +66,6 @@ export class AuthService {
       return { refreshToken, accessToken: reAccessToken };
     }
     return { refreshToken, accessToken };
-  }
-
-  /** 카카오 토큰 요청 */
-  private async requestTokensToKakao(
-    kakaoLoginRequestDto: KakaoLoginRequestDto,
-  ): Promise<{ kakaoTokens: KakaoTokensParam }> {
-    const urlToRequest = 'https://kauth.kakao.com/oauth/token';
-    const headers = {
-      'Content-type': `application/x-www-form-urlencoded;charset=utf-8`,
-    };
-    const body = querystring.stringify({
-      // header의 해당 Content-Type으로 인해
-      grant_type: 'authorization_code',
-      client_id: kakaoLoginRequestDto.apiKey,
-      redirect_uri: kakaoLoginRequestDto.redirectUri,
-      code: kakaoLoginRequestDto.code,
-    });
-
-    const response = await axios.post(urlToRequest, body, { headers });
-    const kakaoTokens: KakaoTokensParam = {
-      refreshToken: response.data.refresh_token,
-      accessToken: response.data.access_token,
-    };
-
-    return { kakaoTokens };
-  }
-
-  /** 카카오 회원 정보 요청 */
-  private async requestUserInfoToKakao(kakaoTokens): Promise<RequestUserInfoToKaKao> {
-    const getUserInfo = await axios.get('https://kapi.kakao.com/v2/user/me', {
-      headers: { Authorization: `Bearer ${kakaoTokens.accessToken}` },
-    });
-    const userInfo = getUserInfo.data; // 발급한 토큰 정보
-    const socialId = userInfo.id;
-
-    const selectOneUserBySocialId = await this.authDAO.selectOneUserBySocialId(socialId);
-
-    let result: RequestUserInfoToKaKao = undefined;
-    if (!selectOneUserBySocialId.data) result = { isNewUser: selectOneUserBySocialId.isNewUser, userInfo };
-    else result = { isNewUser: selectOneUserBySocialId.isNewUser, data: selectOneUserBySocialId.data };
-
-    return result;
   }
 
   /** 리프레쉬 토큰 인덱스 암호화 */

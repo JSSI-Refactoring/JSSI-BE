@@ -4,6 +4,10 @@ export interface KakaoLogin {
   accessToken: string | Promise<string>;
 }
 
+export interface RequestUserInfoToKaKao {
+  userInfo: UserInfo;
+}
+
 interface UserInfo {
   id: number;
   connected_at: string;
@@ -24,13 +28,7 @@ interface UserInfo {
   };
 }
 
-export interface RequestUserInfoToKaKao {
-  isNewUser: boolean;
-  data?: object;
-  userInfo?: UserInfo;
-}
-
-export interface FindOneUserInfo {
+export interface SelectOneUser {
   id: number;
   createdAt: Date;
   updatedAt: Date;
@@ -43,4 +41,9 @@ export interface FindOneUserInfo {
   OAuthAccessToken: string;
   refreshToken: string;
   accessToken: string;
+}
+
+export interface SelectOneUserWithStatus {
+  data: SelectOneUser;
+  isNewUser: boolean;
 }

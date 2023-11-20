@@ -7,6 +7,7 @@ import { User } from '@entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtProvider } from 'src/providers/jwt/jwt.provider';
+import { KakaoProvider } from 'src/providers/kakao/kakao.provider';
 
 @Module({
   imports: [
@@ -20,6 +21,6 @@ import { JwtProvider } from 'src/providers/jwt/jwt.provider';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthDAO, JwtProvider],
+  providers: [AuthService, AuthDAO, JwtProvider, KakaoProvider],
 })
 export class AuthModule {}
