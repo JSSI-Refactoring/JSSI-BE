@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtProvider } from 'src/providers/jwt/jwt.provider';
 import { KakaoProvider } from 'src/providers/kakao/kakao.provider';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { KakaoProvider } from 'src/providers/kakao/kakao.provider';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthDAO, JwtProvider, KakaoProvider],
+  providers: [AuthService, AuthDAO, JwtProvider, KakaoProvider, DataSource],
 })
 export class AuthModule {}
