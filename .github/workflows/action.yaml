@@ -28,7 +28,6 @@ jobs:
 
       - run: npm ci
       - run: npm run build --if-present # build script가 존재하는 경우
-
       - name: create env
         run: |
           pwd
@@ -49,5 +48,5 @@ jobs:
           echo KAKAO_REST_API_KEY=${{ secrets.KAKAO_REST_API_KEY }} >> .env.dev
 
         - name: confirmation action
-          run: echo "Action completed"
+          run: echo "Action completed "
     # - run: npm test
