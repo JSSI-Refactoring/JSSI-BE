@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AuthDAO } from './dao/auth.dao';
-import { ConfigService } from '@nestjs/config';
 import * as querystring from 'querystring';
 import axios from 'axios';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { KakaoLoginRequestDto } from './dto/request/kakao-login.req.dto';
 import { KakaoTokensParam } from './dto/param/kakaoTokens.param';
