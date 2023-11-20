@@ -5,7 +5,7 @@ import { Response } from 'express';
 import { CommonResponseDto } from 'src/common/dto/reponse.dto';
 import { KakaoLoginResponseDto } from './dto/response/kakao-login.res.dto';
 import { KakaoLoginRequestDto } from './dto/request/kakao-login.req.dto';
-import { KakaoLogin } from 'src/interfaces/auth/kakao-login.interface';
+import { KakaoLogin } from '@auth/interfaces/kakao-login.interface';
 
 @Controller('auth')
 export class AuthController {

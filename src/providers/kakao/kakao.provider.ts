@@ -3,7 +3,7 @@ import { KakaoLoginRequestDto } from '@auth/dto/request/kakao-login.req.dto';
 import { Injectable } from '@nestjs/common';
 import * as querystring from 'querystring';
 import axios from 'axios';
-import { RequestUserInfoToKaKao } from 'src/interfaces/auth/kakao-login.interface';
+import { RequestUserInfoToKaKao } from '@auth/interfaces/kakao-login.interface';
 
 @Injectable()
 export class KakaoProvider {
