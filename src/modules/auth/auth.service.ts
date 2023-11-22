@@ -57,6 +57,7 @@ export class AuthService {
           await this.jwtProvider.generateRefreshToken(refreshPayload),
           await this.jwtProvider.generateAccessToken(accessPayload),
         ];
+
         await this.authDAO.updateAppTokensOfUser(createUser.id, refreshToken, accessToken);
         return { refreshToken, accessToken };
       }

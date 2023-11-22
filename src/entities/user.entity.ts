@@ -27,7 +27,7 @@ export class User extends CommonPk {
   @Column('varchar', { unique: true, nullable: true })
   refreshToken: string;
 
-  @Column('varchar', { unique: true, nullable: true })
+  @Column('varchar', { length: 300, unique: true, nullable: true })
   accessToken: string;
 
   // goal: 일대다

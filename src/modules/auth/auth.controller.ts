@@ -11,12 +11,15 @@ import { KakaoLogin } from '@auth/interfaces/kakao-login.interface';
 export class AuthController {
   constructor(private readonly authService: AuthService, private readonly configService: ConfigService) {}
 
-  @Get('/kakaoLogin')
-  test() {
-    return 'this api is successfully connected';
-  }
+  // @Get('/kakao')
+  // async getAuthrization(@Res() res) {
+  //   const url = `https://kauth.kakao.com/oauth/authorize?client_id=${this.configService.get(
+  //     'KAKAO_REST_API_KEY',
+  //   )}&redirect_uri=${this.configService.get('KAKAO_REDIRECT_URI')}&response_type=code`;
+  //   return res.redirect(302, url); // 1-1. 인가코드 발급을 위해 redirect_uri로 리다이렉트
+  // }
 
-  // 프론트에서 발급 받은 인가코드로 카카오에 토큰 발급 요청
+  // @Get('/kakaoLogin')
   @Post('/kakaoLogin')
   async kakaoLogin(
     @Query() query,

@@ -32,15 +32,19 @@ export class AuthDAO {
   }
 
   async updateAppTokensOfUser(id, refreshToken, accessToken) {
-    return await this.userRepository
-      .createQueryBuilder()
-      .update(User)
-      .set({
-        refreshToken,
-        accessToken,
-      })
-      .where(id)
-      .execute();
+    try {
+      return await this.userRepository
+        .createQueryBuilder()
+        .update(User)
+        .set({
+          refreshToken,
+          accessToken,
+        })
+        .where('id = :id', { id })
+        .execute();
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async updateAppAccessTokenOfUser(id, accessToken) {
