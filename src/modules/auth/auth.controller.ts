@@ -11,6 +11,11 @@ import { KakaoLogin } from '@auth/interfaces/kakao-login.interface';
 export class AuthController {
   constructor(private readonly authService: AuthService, private readonly configService: ConfigService) {}
 
+  @Get('/kakaoLogin')
+  test() {
+    return 'this api is successfully connected';
+  }
+
   // 프론트에서 발급 받은 인가코드로 카카오에 토큰 발급 요청
   @Post('/kakaoLogin')
   async kakaoLogin(
