@@ -38,10 +38,10 @@ export class AuthController {
       const kakaoResponse: KakaoLoginResponseDto = new KakaoLoginResponseDto();
       kakaoResponse.accessToken = kakaoLogin.accessToken;
 
-      res.setHeader('Authorization', `Bearer ${kakaoLogin.refreshToken}`);
-      res.cookie('refresh_token', kakaoLogin.refreshToken, {
+      // res.setHeader('Authorization', `Bearer ${kakaoLogin.refreshToken}`);
+      res.cookie('hashed_index', kakaoLogin.hashIdx, {
         httpOnly: true,
-        // maxAge: 24 * 60 * 60 * 1000 쿠키 유효 기간(하루)
+        maxAge: 24 * 60 * 60 * 1000, // 쿠키 유효 기간(하루)
       });
 
       return {

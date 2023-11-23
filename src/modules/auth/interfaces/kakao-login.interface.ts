@@ -1,6 +1,7 @@
 /** https://bobbyhadz.com/blog/typescript-property-does-not-exist-on-type */
 export interface KakaoLogin {
-  refreshToken: string | Promise<string>;
+  // refreshToken: string | Promise<string>;
+  hashIdx: string;
   accessToken: string | Promise<string>;
 }
 
@@ -41,6 +42,7 @@ export interface SelectOneUser {
   OAuthAccessToken: string;
   refreshToken: string;
   accessToken: string;
+  hashIdx: string;
 }
 
 export interface SelectOneUserWithStatus {

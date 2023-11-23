@@ -30,6 +30,9 @@ export class User extends CommonPk {
   @Column('varchar', { length: 300, unique: true, nullable: true })
   accessToken: string;
 
+  @Column('varchar', { unique: true, nullable: true })
+  hashIdx: string;
+
   // goal: 일대다
   @OneToMany(() => Goal, (goal) => goal.user)
   goals: Goal[];

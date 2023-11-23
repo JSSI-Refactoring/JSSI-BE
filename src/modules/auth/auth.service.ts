@@ -48,9 +48,9 @@ export class AuthService {
           profileImage: userInfo.properties.profile_image,
         };
 
-        const hashIndex = await this.hashUserIdForRefreshToken(createUser.id);
+        const hashIdx = await this.hashUserIdForRefreshToken(createUser.id);
         const refreshPayload = {
-          hash: hashIndex,
+          hash: hashIdx,
         };
 
         const [refreshToken, accessToken] = [
@@ -58,24 +58,24 @@ export class AuthService {
           await this.jwtProvider.generateAccessToken(accessPayload),
         ];
 
-        await this.authDAO.updateAppTokensOfUser(createUser.id, refreshToken, accessToken);
-        return { refreshToken, accessToken };
+        await this.authDAO.updateAppTokensOfUser(createUser.id, refreshToken, accessToken, hashIdx);
+        return { hashIdx, accessToken };
       }
 
       /* 기존 회원일 때 */
       const data = selectOneUserBySocialId as SelectOneUser;
-      const { id, nickname, profileImage, refreshToken, accessToken } = data;
+      const { id, nickname, profileImage, accessToken, hashIdx } = data;
       const decodeAccessToken: boolean = await this.jwtProvider.decodeAccessToken(accessToken);
 
       if (decodeAccessToken === false) {
         const reAccessToken = await this.jwtProvider.regenerateAndUpdateAccessToken(id, nickname, profileImage);
         await this.authDAO.updateAppAccessTokenOfUser(id, reAccessToken);
 
-        return { refreshToken, accessToken: reAccessToken };
+        return { hashIdx, accessToken: reAccessToken };
       }
 
       await queryRunner.commitTransaction();
-      return { refreshToken, accessToken };
+      return { hashIdx, accessToken };
     } catch (err) {
       await queryRunner.rollbackTransaction();
     } finally {

@@ -31,7 +31,7 @@ export class AuthDAO {
     return { id };
   }
 
-  async updateAppTokensOfUser(id, refreshToken, accessToken) {
+  async updateAppTokensOfUser(id, refreshToken, accessToken, hashIdx) {
     try {
       return await this.userRepository
         .createQueryBuilder()
@@ -39,6 +39,7 @@ export class AuthDAO {
         .set({
           refreshToken,
           accessToken,
+          hashIdx,
         })
         .where('id = :id', { id })
         .execute();
