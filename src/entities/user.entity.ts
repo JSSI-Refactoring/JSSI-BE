@@ -6,8 +6,8 @@ import { Comment } from '@entities/comment.entity';
 
 @Entity({ name: 'user', schema: 'jssi' })
 export class User extends CommonPk {
-  @Column('varchar', { unique: true, nullable: false })
-  socialId: string;
+  @Column('int', { unique: true, nullable: false })
+  socialId: number;
 
   @Column('varchar', { unique: false, nullable: false })
   socialType: string;

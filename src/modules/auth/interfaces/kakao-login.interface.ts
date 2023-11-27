@@ -9,7 +9,7 @@ export interface RequestUserInfoToKaKao {
   userInfo: UserInfo;
 }
 
-interface UserInfo {
+export interface UserInfo {
   id: number;
   connected_at: string;
   properties: {
@@ -34,7 +34,7 @@ export interface SelectOneUser {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: null | Date;
-  socialId: string;
+  socialId: number;
   socialType: 'KAKAO' | string;
   nickname: string;
   profileImage: string;
